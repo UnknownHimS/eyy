@@ -1,289 +1,394 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>System Alert</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-    html, body {
-      margin: 0; padding: 0;
-      height: 100%;
-      background: black;
-      font-family: 'Share Tech Mono', monospace;
-      overflow: hidden;
-      user-select: none;
-      color: #0f0;
-      position: relative;
-    }
-    /* Flickering background image */
-    body {
-      background-image:
-        url('https://tse1.mm.bing.net/th/id/OIP.5xBMXvo4OiC-0HgKUDm5JgHaGI?pid=Api&P=0&h=220');
-      background-size: cover;
-      background-position: center center;
-      animation: flickerBg 3s infinite;
-      filter: brightness(0.3) contrast(1.2);
-    }
-    @keyframes flickerBg {
-      0%, 20%, 40%, 60%, 80%, 100% {
-        filter: brightness(0.3) contrast(1.2);
-      }
-      10%, 30%, 50%, 70%, 90% {
-        filter: brightness(0.5) contrast(1.4);
-      }
-    }
-    /* Green glitch overlay stripes */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(0,255,0,0.05),
-          rgba(0,255,0,0.05) 2px,
-          transparent 2px,
-          transparent 4px
-        );
-      pointer-events: none;
-      animation: glitchOverlay 0.3s infinite;
-      z-index: 0;
-    }
-    @keyframes glitchOverlay {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 4px; }
-    }
-    /* Container for content */
-    #container {
-      position: relative;
-      z-index: 10;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.6);
-      padding: 20px;
-      box-sizing: border-box;
-    }
-    h1 {
-      font-size: 4rem;
-      margin: 0;
-      animation: flickerText 1.5s infinite alternate;
-      text-shadow:
-        0 0 10px #0f0,
-        0 0 20px #0f0,
-        0 0 30px #0f0,
-        0 0 40px #0f0;
-    }
-    p {
-      font-size: 1.5rem;
-      margin: 20px 0 0 0;
-      animation: glitchText 2s infinite;
-    }
-    @keyframes flickerText {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        opacity: 1;
-        text-shadow:
-          0 0 10px #0f0,
-          0 0 20px #0f0,
-          0 0 30px #0f0,
-          0 0 40px #0f0;
-      }
-      20%, 22%, 24%, 55% {
-        opacity: 0.6;
-        text-shadow: none;
-      }
-    }
-    @keyframes glitchText {
-      0% {
-        text-shadow:
-          2px 0 #0f0,
-          -2px 0 #0f0;
-      }
-      20% {
-        text-shadow:
-          -2px 0 #0f0,
-          2px 0 #0f0;
-      }
-      40% {
-        text-shadow:
-          2px 2px #0f0,
-          -2px -2px #0f0;
-      }
-      60% {
-        text-shadow:
-          -2px 2px #0f0,
-          2px -2px #0f0;
-      }
-      80% {
-        text-shadow:
-          2px 0 #0f0,
-          -2px 0 #0f0;
-      }
-      100% {
-        text-shadow:
-          -2px 0 #0f0,
-          2px 0 #0f0;
-      }
-    }
-    /* Fake popup */
-    #fake-popup {
-      background: #001100dd;
-      border: 3px solid #0f0;
-      padding: 30px 40px;
-      box-shadow:
-        0 0 20px #0f0,
-        inset 0 0 30px #0f0;
-      font-size: 1.2rem;
-      user-select: none;
-      max-width: 400px;
-      margin-top: 40px;
-      border-radius: 8px;
-    }
-    #fake-popup button {
-      margin-top: 20px;
-      background: black;
-      border: 2px solid #0f0;
-      color: #0f0;
-      padding: 10px 20px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
-      border-radius: 5px;
-    }
-    #fake-popup button:hover {
-      background: #0f0;
-      color: black;
-    }
-    /* Form styles */
-    form {
-      margin-top: 30px;
-      text-align: left;
-      color: #0f0;
-      font-size: 1rem;
-      max-width: 400px;
-      user-select: text;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-      text-shadow: 0 0 5px #0f0;
-    }
-    input[type="range"] {
-      width: 100%;
-      margin-bottom: 15px;
-      -webkit-appearance: none;
-      background: #002200;
-      height: 8px;
-      border-radius: 4px;
-      outline: none;
-      cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      background: #0f0;
-      cursor: pointer;
-      border-radius: 50%;
-      border: 1px solid #0a0;
-      box-shadow: 0 0 8px #0f0;
-      transition: background 0.3s;
-    }
-    input[type="range"]:hover::-webkit-slider-thumb {
-      background: #aaffaa;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      background: #0f0;
-      cursor: pointer;
-      border-radius: 50%;
-      border: 1px solid #0a0;
-      box-shadow: 0 0 8px #0f0;
-      transition: background 0.3s;
-    }
-    input[type="range"]:hover::-moz-range-thumb {
-      background: #aaffaa;
-    }
-    input[type="submit"] {
-      background: black;
-      border: 2px solid #0f0;
-      color: #0f0;
-      padding: 10px 20px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background 0.3s, color 0.3s;
-    }
-    input[type="submit"]:hover {
-      background: #0f0;
-      color: black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #00ff41;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(0, 20, 30, 0.9);
+            border: 1px solid #00ff41;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .subtitle {
+            color: #00d4ff;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #00d4ff;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background: #001a29;
+            border: 2px solid #00ff41;
+            border-radius: 5px;
+            color: #00ff41;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #00ff41, #00d4ff);
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 65, 0.4);
+        }
+
+        .scan-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            animation: scan 3s linear infinite;
+            opacity: 0;
+            z-index: 5;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+                opacity: 0.8;
+            }
+            100% {
+                top: 100vh;
+                opacity: 0.8;
+            }
+        }
+
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0;
+        }
+
+        .terminal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 3px solid #00ff41;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.6);
+            z-index: 100;
+            opacity: 0;
+            width: 80%;
+            max-width: 600px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .terminal-content {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .command {
+            color: #00ff41;
+        }
+
+        .response {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+
+        .blinking-cursor {
+            animation: blink 1s infinite;
+            color: #00ff41;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .success-message {
+            color: #00ff41;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+            text-shadow: 0 0 20px #00ff41;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .flicker {
+            animation: flicker 0.1s infinite;
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
 </head>
 <body>
-  <div id="container" aria-live="assertive" role="alert">
-    <h1>!!! SYSTEM ALERT !!!</h1>
-    <p>Unauthorized access detected.</p>
-    <p>Initiating lockdown sequence...</p>
-
-    <div id="fake-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title" aria-describedby="popup-desc">
-      <h2 id="popup-title">Critical Error</h2>
-      <p id="popup-desc">Your system has been compromised.<br>Please do not close this window.</p>
-      <button id="closeBtn" aria-label="Close alert">Override Lockdown</button>
+    <div class="scan-line"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <div class="container" id="loginContainer">
+        <div class="header">
+            <h1>SECURE LOGIN PORTAL</h1>
+            <div class="subtitle">SYSTEM V3.14 - ENTER CREDENTIALS</div>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">USERNAME</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">PASSWORD</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="btn">AUTHENTICATE</button>
+        </form>
     </div>
 
-    <form id="feedbackForm" action="https://formspree.io/f/mayvlzqv" method="POST" aria-label="Shock rating form" style="display:none;">
-      <label for="shockRating">Rate how shocked you are:</label>
-      <input type="range" id="shockRating" name="shockRating" min="0" max="10" value="5" aria-valuemin="0" aria-valuemax="10" aria-valuenow="5" />
-      <input type="submit" value="Submit Feedback" />
-    </form>
-  </div>
+    <div class="terminal" id="terminal">
+        <div class="terminal-content" id="terminalContent"></div>
+    </div>
 
-  <script>
-    // Flicker the container text randomly
-    const container = document.getElementById('container');
-    function flickerText() {
-      container.style.opacity = Math.random() > 0.8 ? '0.6' : '1';
-      setTimeout(flickerText, 100 + Math.random() * 400);
-    }
-    flickerText();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginContainer = document.getElementById('loginContainer');
+            const terminal = document.getElementById('terminal');
+            const terminalContent = document.getElementById('terminalContent');
+            const scanLine = document.querySelector('.scan-line');
+            const matrixRain = document.getElementById('matrixRain');
 
-    // Button closes the fake popup and "restores" system, then shows form
-    document.getElementById('closeBtn').addEventListener('click', () => {
-      const popup = document.getElementById('fake-popup');
-      popup.style.transition = 'opacity 1s ease';
-      popup.style.opacity = '0';
-      setTimeout(() => {
-        popup.style.display = 'none';
-        container.innerHTML = `
-          <h1>System Restored</h1>
-          <p>All clear. This was just a harmless prank.</p>
-          <p>Have a neon day, detective.</p>
-          <form id="feedbackForm" action="https://formspree.io/f/mayvlzqv" method="POST" aria-label="Shock rating form">
-            <label for="shockRating">Rate how shocked you are:</label>
-            <input type="range" id="shockRating" name="shockRating" min="0" max="10" value="5" aria-valuemin="0" aria-valuemax="10" aria-valuenow="5" />
-            <input type="submit" value="Submit Feedback" />
-          </form>
-        `;
-        // Reattach form submit handler if needed
-        const form = document.getElementById('feedbackForm');
-        form.addEventListener('submit', e => {
-          e.preventDefault();
-          const rating = form.shockRating.value;
-          alert(`Thanks for your feedback! You rated your shock as: ${rating}`);
-          form.reset();
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                startHackSequence();
+            });
+
+            function startHackSequence() {
+                // Initial flicker
+                document.body.classList.add('flicker');
+                setTimeout(() => {
+                    document.body.classList.remove('flicker');
+                    
+                    // Show security alert
+                    showAlert("SECURITY PROTOCOL TRIGGERED\nSYSTEM INTEGRITY COMPROMISED");
+                    
+                    setTimeout(() => {
+                        startTypingSequence();
+                    }, 3000);
+                }, 1000);
+            }
+
+            function showAlert(message) {
+                alert("🚨 SECURITY ALERT 🚨\n\n" + message + "\n\nSystem administrators have been notified.");
+            }
+
+            function startTypingSequence() {
+                scanLine.style.opacity = '0.8';
+                
+                // Auto-type in form fields
+                typeText(usernameInput, "admin", 100, () => {
+                    typeText(passwordInput, "********", 100, () => {
+                        startTerminalSequence();
+                    });
+                });
+            }
+
+            function typeText(input, text, speed, callback) {
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        input.value = text.substring(0, i + 1);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        if (callback) callback();
+                    }
+                }
+                type();
+            }
+
+            function startTerminalSequence() {
+                terminal.style.opacity = '1';
+                loginContainer.style.opacity = '0.3';
+                
+                const commands = [
+                    "INITIATING SYSTEM SCAN",
+                    "DETECTING VULNERABILITIES...",
+                    "VULNERABILITY FOUND: CVE-2023-4587",
+                    "EXPLOITING SECURITY LOOPHOLE...",
+                    "ACCESSING USER DATABASE...",
+                    "DOWNLOADING ENCRYPTED FILES...",
+                    "DECRYPTION IN PROGRESS...",
+                    "ESTABLISHING BACKDOOR ACCESS...",
+                    "SYSTEM COMPROMISED SUCCESSFULLY"
+                ];
+
+                let i = 0;
+                function typeCommand() {
+                    if (i < commands.length) {
+                        const commandDiv = document.createElement('div');
+                        commandDiv.className = 'command';
+                        commandDiv.textContent = `root@hack:~$ ${commands[i]}`;
+                        terminalContent.appendChild(commandDiv);
+                        terminal.scrollTop = terminal.scrollHeight;
+                        
+                        i++;
+                        
+                        // Increase speed as we go
+                        const speed = Math.max(100, 500 - (i * 50));
+                        setTimeout(typeCommand, speed);
+                        
+                        // Start flickering faster
+                        if (i > 3) {
+                            document.body.classList.add('flicker');
+                            setTimeout(() => {
+                                document.body.classList.remove('flicker');
+                            }, speed / 2);
+                        }
+                    } else {
+                        showFinalMessage();
+                    }
+                }
+                
+                typeCommand();
+            }
+
+            function showFinalMessage() {
+                const finalMessage = document.createElement('div');
+                finalMessage.className = 'success-message';
+                finalMessage.innerHTML = `
+                    🔓 SYSTEM BREACH COMPLETE<br>
+                    <span style="font-size: 16px; color: #00d4ff;">
+                    This was a simulated security demonstration.<br>
+                    Your system is secure.
+                    </span>
+                `;
+                terminalContent.appendChild(finalMessage);
+                terminal.scrollTop = terminal.scrollHeight;
+                
+                // Create matrix rain effect
+                createMatrixRain();
+                
+                // Make everything green and sci-fi
+                document.body.style.background = 'linear-gradient(135deg, #001a00 0%, #003300 100%)';
+                scanLine.style.background = 'linear-gradient(90deg, transparent, #00ff00, transparent)';
+            }
+
+            function createMatrixRain() {
+                matrixRain.style.opacity = '0.5';
+                const characters = '01';
+                const columns = Math.floor(window.innerWidth / 20);
+                
+                for (let i = 0; i < columns; i++) {
+                    const column = document.createElement('div');
+                    column.style.position = 'absolute';
+                    column.style.top = '-100px';
+                    column.style.left = (i * 20) + 'px';
+                    column.style.width = '2px';
+                    column.style.fontSize = '16px';
+                    column.style.color = '#00ff00';
+                    column.style.opacity = '0.8';
+                    
+                    let text = '';
+                    for (let j = 0; j < 50; j++) {
+                        text += characters.charAt(Math.floor(Math.random() * characters.length)) + '<br>';
+                    }
+                    column.innerHTML = text;
+                    
+                    matrixRain.appendChild(column);
+                    
+                    // Animate the column
+                    let position = -100;
+                    function animate() {
+                        position += 2;
+                        column.style.top = position + 'px';
+                        
+                        if (position < window.innerHeight) {
+                            requestAnimationFrame(animate);
+                        }
+                    }
+                    animate();
+                }
+            }
         });
-      }, 1000);
-    });
-  </script>
+    </script>
 </body>
 </html>
