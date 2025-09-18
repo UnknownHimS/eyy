@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>System Alert</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    background: black;
+    color: #0f0;
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    user-select: none;
+  }
+  #container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+  }
+  h1 {
+    font-size: 4rem;
+    margin: 0;
+    animation: flicker 1.5s infinite alternate;
+    text-shadow:
+      0 0 10px #0f0,
+      0 0 20px #0f0,
+      0 0 30px #0f0,
+      0 0 40px #0f0;
+  }
+  p {
+    font-size: 1.5rem;
+    margin: 20px 0 0 0;
+    animation: glitchText 2s infinite;
+  }
+  #fake-popup {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #001100dd;
+    border: 3px solid #0f0;
+    padding: 30px 40px;
+    box-shadow:
+      0 0 20px #0f0,
+      inset 0 0 30px #0f0;
+    z-index: 9999;
+    font-size: 1.2rem;
+    user-select: none;
+  }
+  #fake-popup button {
+    margin-top: 20px;
+    background: black;
+    border: 2px solid #0f0;
+    color: #0f0;
+    padding: 10px 20px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+  }
+  #fake-popup button:hover {
+    background: #0f0;
+    color: black;
+  }
+  @keyframes flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+      opacity: 1;
+      text-shadow:
+        0 0 10px #0f0,
+        0 0 20px #0f0,
+        0 0 30px #0f0,
+        0 0 40px #0f0;
+    }
+    20%, 22%, 24%, 55% {
+      opacity: 0.6;
+      text-shadow: none;
+    }
+  }
+  @keyframes glitchText {
+    0% {
+      text-shadow:
+        2px 0 #0f0,
+        -2px 0 #0f0;
+    }
+    20% {
+      text-shadow:
+        -2px 0 #0f0,
+        2px 0 #0f0;
+    }
+    40% {
+      text-shadow:
+        2px 2px #0f0,
+        -2px -2px #0f0;
+    }
+    60% {
+      text-shadow:
+        -2px 2px #0f0,
+        2px -2px #0f0;
+    }
+    80% {
+      text-shadow:
+        2px 0 #0f0,
+        -2px 0 #0f0;
+    }
+    100% {
+      text-shadow:
+        -2px 0 #0f0,
+        2px 0 #0f0;
+    }
+  }
+  /* Background glitch effect */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0,255,0,0.05),
+        rgba(0,255,0,0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    pointer-events: none;
+    animation: glitchBg 0.3s infinite;
+    z-index: 0;
+  }
+  @keyframes glitchBg {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 4px; }
+  }
+</style>
+</head>
+<body>
+  <div id="container" aria-live="assertive" role="alert">
+    <h1>!!! SYSTEM ALERT !!!</h1>
+    <p>Unauthorized access detected.</p>
+    <p>Initiating lockdown sequence...</p>
+  </div>
+
+  <div id="fake-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title" aria-describedby="popup-desc">
+    <h2 id="popup-title">Critical Error</h2>
+    <p id="popup-desc">Your system has been compromised.<br>Please do not close this window.</p>
+    <button id="closeBtn" aria-label="Close alert">Override Lockdown</button>
+  </div>
+
+<script>
+  // Flicker the container text randomly
+  const container = document.getElementById('container');
+  function flickerText() {
+    container.style.opacity = Math.random() > 0.8 ? '0.6' : '1';
+    setTimeout(flickerText, 100 + Math.random() * 400);
+  }
+  flickerText();
+
+  // Button closes the fake popup and "restores" system
+  document.getElementById('closeBtn').addEventListener('click', () => {
+    const popup = document.getElementById('fake-popup');
+    popup.style.transition = 'opacity 1s ease';
+    popup.style.opacity = '0';
+    setTimeout(() => {
+      popup.style.display = 'none';
+      container.innerHTML = '<h1>System Restored</h1><p>All clear. This was just a harmless prank.</p><p>Have a neon day, detective.</p>';
+    }, 1000);
+  });
+
+  // Optional: play beep sounds or add more glitch effects here
+</script>
+</body>
+</html>
